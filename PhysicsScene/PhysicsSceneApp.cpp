@@ -42,7 +42,9 @@ void PhysicsSceneApp::update(float deltaTime) {
 	// input example
 	aie::Input* input = aie::Input::getInstance();
 
-	aie::Gizmos::clear();
+	//aie::Gizmos::clear();
+
+	setupContinuousDemo(glm::vec2(4.0f, 4.0f), glm::vec2(4.0f, 4.0f), 10);
 
 	m_physicsScene->update(deltaTime);
 	m_physicsScene->updateGizmos();
@@ -72,4 +74,22 @@ void PhysicsSceneApp::draw() {
 
 	// done drawing sprites
 	m_2dRenderer->end();
+}
+
+void PhysicsSceneApp::setupContinuousDemo(glm::vec2 initialPosition, glm::vec2 initialVelocity, float gravity)
+{
+	float time = 0.0f;
+	float timeStep = 0.5f;
+	float radius = 1.0f;
+	int segments = 12;
+	glm::vec4 colour = glm::vec4(3, 1, 0, 1);
+
+	while (time <= 5)
+	{
+		float x = initialPosition.x + initialVelocity.x*time;
+		float y = initialPosition.y + initialVelocity.y*time+ .5 * -gravity * (time * time);
+
+		aie::Gizmos::add2DCircle(glm::vec2(x, y), radius, segments, colour);
+		time += timeStep;
+	}
 }
