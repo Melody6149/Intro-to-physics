@@ -9,7 +9,7 @@ Sphere::Sphere(glm::vec2 position, glm::vec2 velocity, float mass, float radius,
 
 void Sphere::makeGizmo()
 {
-	aie::Gizmos::add2DCircle(m_position, m_radius, 1, m_colour);
+	aie::Gizmos::add2DCircle(m_position, m_radius, 69, m_colour);
 }
 bool Sphere::checkCollision(PhysicsObject* other)
 {

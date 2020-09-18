@@ -9,8 +9,13 @@ Plane::Plane() : PhysicsObject(PLANE)
 
 Plane::Plane(glm::vec2 normal, float distanceToOrigin) : PhysicsObject(PLANE)
 {
-	m_normal = normal;
+	m_normal = glm::normalize(normal);
 	m_distanceToOrigin = distanceToOrigin;
+}
+
+Plane::~Plane()
+{
+
 }
 
 void Plane::makeGizmo()
@@ -23,4 +28,17 @@ void Plane::makeGizmo()
 	glm::vec2 start = centerPoint + (parallel * lineSegmentLength);
 	glm::vec2 end = centerPoint - (parallel * lineSegmentLength);
 	aie::Gizmos::add2DLine(start, end, colour);
+}
+
+void Plane::resolveCollision(RigidBody* other, glm::vec2 contact)
+{
+	glm::vec2 collisionNormal = m_normal;
+	glm::vec2 relativeVelocity = other->getvelocity();
+
+	float elasticity = 1;
+	float j = glm::dot(-(1 + elasticity) * (relativeVelocity), collisionNormal) / (1 / other->getMass());
+
+	glm::vec2 force = collisionNormal * j;
+	other->applyForce(force, contact - other->getPosition());
+
 }

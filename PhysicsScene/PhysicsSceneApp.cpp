@@ -5,6 +5,7 @@
 #include"PhysicsScene.h"
 #include<Gizmos.h>
 #include "Sphere.h"
+#include "Plane.h"
 
 
 PhysicsSceneApp::PhysicsSceneApp() {
@@ -25,11 +26,27 @@ bool PhysicsSceneApp::startup() {
 	// the following path would be used instead: "./font/consolas.ttf"
 	m_font = new aie::Font("../bin/font/consolas.ttf", 32);
 
+	glm::vec2  gravity = glm::vec2(0.0f, 0.0f);
 
+	glm::vec2 initialPosition = glm::vec2(0.0f, 0.0f);
+	glm::vec2 finalPosition = glm::vec2(60.0f, 0.0f);
+	glm::vec2 initialvelocity = calculateVelocity(initialPosition, finalPosition, gravity.y, 5.0f);
+
+
+	Plane* plane = new Plane(glm::vec2(0.0f, 1.0f), 0.0f);
+	Sphere* seean = new Sphere(glm::vec2(0.0f,20.0f), glm::vec2(0.0f,000.0f), 1.0f, 5.0f, glm::vec4(3, 1, 0, 1));
+	Sphere* seean1 = new Sphere(glm::vec2(0.0f,40.0f), glm::vec2(0.0f,-80.0f), 1.0f, 5.0f, glm::vec4(3, 1, 0, 1));
+
+	/*Sphere* ball = new Sphere(initialPosition, initialvelocity, 1.0f, 4.0f, glm::vec4(1, 0.0f, 0.0f, 1.0f));*/
 
 	m_physicsScene = new PhysicsScene();
+	m_physicsScene->setGravity(gravity);
 	m_physicsScene->setTimeStep(0.01f);
 
+
+	m_physicsScene->addActor(seean);
+	m_physicsScene->addActor(seean1);
+	m_physicsScene->addActor(plane);
 
 	return true;
 }
@@ -46,6 +63,7 @@ void PhysicsSceneApp::update(float deltaTime) {
 	aie::Input* input = aie::Input::getInstance();
 
 	aie::Gizmos::clear();
+
 
 	
 
@@ -95,4 +113,14 @@ void PhysicsSceneApp::setupContinuousDemo(glm::vec2 initialPosition, glm::vec2 i
 		aie::Gizmos::add2DCircle(glm::vec2(x, y), radius, segments, colour);
 		time += timeStep;
 	}
+}
+
+glm::vec2 PhysicsSceneApp::calculateVelocity(glm::vec2 initialPosition, glm::vec2 finalPosition, float gravity, float time)
+{
+	glm::vec2 initialVelocity = glm::vec2(0, 0);
+
+	initialVelocity.x = (finalPosition.x - initialPosition.x) / time;
+	initialVelocity.y = (finalPosition.y - initialPosition.y - (0.5f * gravity * (time * time)) / time);
+
+	return initialVelocity;
 }
